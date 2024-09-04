@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 
-import userService from "../service/user.service";
+import { UserService } from "../service/user.service";
 
 class UserController {
-  constructor() {}
+  constructor(private readonly userService: UserService = new UserService()) {}
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const { id, password } = req.body;
 
-      const user = await userService.signUp(id, password);
+      const user = await this.userService.signUp(id, password);
 
       res.cookie("refreshToken", user.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -18,29 +18,37 @@ class UserController {
 
       res.status(201).json(user);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async signOut(req: Request, res: Response, next: NextFunction) {
     try {
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async getInfo(req: Request, res: Response, next: NextFunction) {
     try {
       res.status(200).json({ message: "Working" });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

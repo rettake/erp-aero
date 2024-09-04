@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { TokenService } from "./token.service";
+import { ApiError } from "../exceptions/api-error";
 
-class UserService {
+export class UserService {
   constructor(
     private readonly prisma: PrismaClient = new PrismaClient(),
     private readonly tokenService: TokenService = new TokenService()
@@ -16,7 +17,7 @@ class UserService {
     });
 
     if (existUser) {
-      throw new Error("User already exists");
+      throw ApiError.BadRequest("User already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,7 +46,3 @@ class UserService {
 
   async getInfo() {}
 }
-
-const userService = new UserService();
-
-export default userService;
