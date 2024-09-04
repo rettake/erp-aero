@@ -3,11 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const express_validator_1 = require("express-validator");
 const user_service_1 = __importDefault(require("../service/user.service"));
+const api_error_1 = require("../exceptions/api-error");
 class UserController {
     constructor() { }
     async signUp(req, res, next) {
         try {
+            const errors = (0, express_validator_1.validationResult)(req);
+            if (!errors.isEmpty()) {
+                return next(api_error_1.ApiError.BadRequest("Validation error", errors.array().map((err) => err.msg)));
+            }
             const { id, password } = req.body;
             const user = await user_service_1.default.signUp(id, password);
             res.cookie("refreshToken", user.refreshToken, {

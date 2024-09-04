@@ -1,12 +1,25 @@
 import { NextFunction, Request, Response } from "express";
+import { validationResult } from "express-validator";
 
 import userService from "../service/user.service";
+import { ApiError } from "../exceptions/api-error";
 
 class UserController {
   constructor() {}
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return next(
+          ApiError.BadRequest(
+            "Validation error",
+            errors.array().map((err) => err.msg)
+          )
+        );
+      }
+
       const { id, password } = req.body;
 
       const user = await userService.signUp(id, password);
