@@ -8,6 +8,14 @@ datasource db {
 }
 
 model User {
-  id       String @id @unique()
+  id       String  @id @unique()
   password String
+  Token    Token[]
+}
+
+model Token {
+  id           String @id @default(cuid())
+  refreshToken String
+  userId       String @unique
+  user         User   @relation(fields: [userId], references: [id])
 }
