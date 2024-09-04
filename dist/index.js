@@ -16,8 +16,8 @@ app.use((0, cors_1.default)());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use(error_middleware_1.default);
 app.use("/api", router_1.default);
+app.use(error_middleware_1.default);
 const start = async () => {
     try {
         app.listen(port, () => {

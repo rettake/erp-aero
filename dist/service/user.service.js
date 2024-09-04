@@ -3,18 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const token_service_1 = require("./token.service");
 const api_error_1 = require("../exceptions/api-error");
+const token_service_1 = __importDefault(require("./token.service"));
+const prisma = new client_1.PrismaClient();
 class UserService {
-    constructor(prisma = new client_1.PrismaClient(), tokenService = new token_service_1.TokenService()) {
-        this.prisma = prisma;
-        this.tokenService = tokenService;
-    }
+    constructor() { }
     async signUp(id, password) {
-        const existUser = await this.prisma.user.findUnique({
+        const existUser = await prisma.user.findUnique({
             where: {
                 id,
             },
@@ -23,14 +20,14 @@ class UserService {
             throw api_error_1.ApiError.BadRequest("User already exists");
         }
         const hashedPassword = await bcrypt_1.default.hash(password, 10);
-        const user = await this.prisma.user.create({
+        const user = await prisma.user.create({
             data: {
                 id,
                 password: hashedPassword,
             },
         });
-        const tokens = this.tokenService.generateTokens(id);
-        await this.tokenService.saveToken(id, tokens.refreshToken);
+        const tokens = token_service_1.default.generateTokens(id);
+        await token_service_1.default.saveToken(id, tokens.refreshToken);
         delete user.password;
         return { ...tokens, user };
     }
@@ -39,4 +36,5 @@ class UserService {
     async signOut() { }
     async getInfo() { }
 }
-exports.UserService = UserService;
+const userService = new UserService();
+exports.default = userService;

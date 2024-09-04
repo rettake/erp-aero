@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 
-import { UserService } from "../service/user.service";
+import userService from "../service/user.service";
 
 class UserController {
-  constructor(private readonly userService: UserService = new UserService()) {}
+  constructor() {}
 
   async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const { id, password } = req.body;
 
-      const user = await this.userService.signUp(id, password);
+      const user = await userService.signUp(id, password);
 
       res.cookie("refreshToken", user.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,

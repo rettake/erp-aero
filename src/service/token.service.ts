@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
-export class TokenService {
-  constructor(private readonly prisma: PrismaClient = new PrismaClient()) {}
+const prisma = new PrismaClient();
+
+class TokenService {
+  constructor() {}
 
   generateTokens(id: string) {
     const accessToken = jwt.sign({ id }, process.env.JWT_ACCESS_SECRET || "", {
@@ -20,14 +22,14 @@ export class TokenService {
   }
 
   async saveToken(id: string, refreshToken: string) {
-    const tokenData = await this.prisma.token.findUnique({
+    const tokenData = await prisma.token.findUnique({
       where: {
         userId: id,
       },
     });
 
     if (tokenData) {
-      await this.prisma.token.update({
+      await prisma.token.update({
         where: {
           userId: id,
         },
@@ -36,7 +38,7 @@ export class TokenService {
         },
       });
     } else {
-      await this.prisma.token.create({
+      await prisma.token.create({
         data: {
           userId: id,
           refreshToken,

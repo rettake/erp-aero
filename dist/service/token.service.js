@@ -3,13 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TokenService = void 0;
 const client_1 = require("@prisma/client");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const prisma = new client_1.PrismaClient();
 class TokenService {
-    constructor(prisma = new client_1.PrismaClient()) {
-        this.prisma = prisma;
-    }
+    constructor() { }
     generateTokens(id) {
         const accessToken = jsonwebtoken_1.default.sign({ id }, process.env.JWT_ACCESS_SECRET || "", {
             expiresIn: "1h",
@@ -20,13 +18,13 @@ class TokenService {
         return { accessToken, refreshToken };
     }
     async saveToken(id, refreshToken) {
-        const tokenData = await this.prisma.token.findUnique({
+        const tokenData = await prisma.token.findUnique({
             where: {
                 userId: id,
             },
         });
         if (tokenData) {
-            await this.prisma.token.update({
+            await prisma.token.update({
                 where: {
                     userId: id,
                 },
@@ -36,7 +34,7 @@ class TokenService {
             });
         }
         else {
-            await this.prisma.token.create({
+            await prisma.token.create({
                 data: {
                     userId: id,
                     refreshToken,
@@ -45,6 +43,5 @@ class TokenService {
         }
     }
 }
-exports.TokenService = TokenService;
 const tokenService = new TokenService();
 exports.default = tokenService;

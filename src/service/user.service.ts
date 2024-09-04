@@ -1,16 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { TokenService } from "./token.service";
 import { ApiError } from "../exceptions/api-error";
+import tokenService from "./token.service";
 
-export class UserService {
-  constructor(
-    private readonly prisma: PrismaClient = new PrismaClient(),
-    private readonly tokenService: TokenService = new TokenService()
-  ) {}
+const prisma = new PrismaClient();
+
+class UserService {
+  constructor() {}
 
   async signUp(id: string, password: string) {
-    const existUser = await this.prisma.user.findUnique({
+    const existUser = await prisma.user.findUnique({
       where: {
         id,
       },
@@ -22,16 +21,16 @@ export class UserService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await this.prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         id,
         password: hashedPassword,
       },
     });
 
-    const tokens = this.tokenService.generateTokens(id);
+    const tokens = tokenService.generateTokens(id);
 
-    await this.tokenService.saveToken(id, tokens.refreshToken);
+    await tokenService.saveToken(id, tokens.refreshToken);
 
     delete (user as { password?: string }).password;
 
@@ -46,3 +45,7 @@ export class UserService {
 
   async getInfo() {}
 }
+
+const userService = new UserService();
+
+export default userService;

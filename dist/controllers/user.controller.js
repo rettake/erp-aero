@@ -1,14 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_service_1 = require("../service/user.service");
+const user_service_1 = __importDefault(require("../service/user.service"));
 class UserController {
-    constructor(userService = new user_service_1.UserService()) {
-        this.userService = userService;
-    }
+    constructor() { }
     async signUp(req, res, next) {
         try {
             const { id, password } = req.body;
-            const user = await this.userService.signUp(id, password);
+            const user = await user_service_1.default.signUp(id, password);
             res.cookie("refreshToken", user.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
