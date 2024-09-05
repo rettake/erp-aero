@@ -27,6 +27,18 @@ class FileController {
 
   async getList(req: Request, res: Response, next: NextFunction) {
     try {
+      const listSize = req.query.list_size
+        ? parseInt(String(req.query.list_size), 10)
+        : 10;
+      const page = req.query.page ? parseInt(String(req.query.page), 10) : 1;
+
+      const files = await fileService.getList(listSize, page);
+
+      res.status(200).json({
+        files,
+        totalPages: Math.ceil(files.length / listSize),
+        page: page,
+      });
     } catch (error) {
       next(error);
     }
@@ -36,13 +48,13 @@ class FileController {
     try {
       const fileId = req.params.id;
       const file = await fileService.getSingle(fileId);
-  
+
       if (!file) {
         return next(ApiError.BadRequest("File not found"));
       }
-  
+
       await fileService.delete(fileId);
-  
+
       res.status(200).json({ message: "File deleted successfully" });
     } catch (error) {
       next(error);

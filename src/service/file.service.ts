@@ -22,7 +22,14 @@ class FileService {
     return uploadedFile;
   }
 
-  async getList() {}
+  async getList(listSize: number, page: number) {
+    const files = await prisma.file.findMany({
+      skip: (page - 1) * listSize,
+      take: listSize,
+    });
+
+    return files;
+  }
 
   async delete(id: string) {
     await prisma.file.delete({
