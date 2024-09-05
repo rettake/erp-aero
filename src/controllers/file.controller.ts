@@ -99,6 +99,20 @@ class FileController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
+      const file = req.file;
+      const fileId = req.params.id;
+
+      if (!file) {
+        return next(ApiError.BadRequest("No file uploaded"));
+      }
+
+      const uploadedFile = await fileService.update(file, fileId);
+
+      if (!uploadedFile) {
+        return next(ApiError.BadRequest("File not uploaded"));
+      }
+
+      res.status(201).json(uploadedFile);
     } catch (error) {
       next(error);
     }
