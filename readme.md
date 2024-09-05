@@ -16,9 +16,10 @@
 
 1. git clone https://github.com/rettake/erp-aero.git
 2. npm i
-3. npx prisma init
-4. npx prisma migrate dev
-5. docker compose up -d
+3. cp .env.example .env
+4. npx prisma init
+5. npx prisma migrate dev
+6. docker compose up -d
 
 ## Использование
 

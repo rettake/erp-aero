@@ -14,7 +14,7 @@ dist
 uploads
 
 # env
-*.env*
+*.env
 
 # Benchmarking
 benchmarks/graphs
