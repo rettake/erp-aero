@@ -1,9 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { ApiError } from "../exceptions/api-error";
+import * as fs from "fs";
+import * as path from "path";
 
 const prisma = new PrismaClient();
 
 class FileService {
+  private uploadDir = path.join(__dirname, "uploads");
+
   constructor() {}
 
   async upload(file: Express.Multer.File) {
@@ -21,7 +24,18 @@ class FileService {
 
   async getList() {}
 
-  async delete() {}
+  async delete(id: string) {
+    await prisma.file.delete({
+      where: {
+        id,
+      },
+    });
+
+    const filePath = path.join(this.uploadDir, id);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
 
   async getSingle(id: string) {
     const file = await prisma.file.findUnique({
