@@ -15,7 +15,7 @@ model User {
 
 model Token {
   id           String @id @default(cuid())
-  refreshToken String
+  refreshToken String @unique
   userId       String @unique
   user         User   @relation(fields: [userId], references: [id])
 }

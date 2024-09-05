@@ -65,7 +65,11 @@ class UserService {
 
   async refresh() {}
 
-  async signOut() {}
+  async signOut(refreshToken: string) {
+    const token = await tokenService.removeToken(refreshToken);
+
+    return token;
+  }
 
   async getInfo() {}
 }

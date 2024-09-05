@@ -61,6 +61,12 @@ class UserController {
 
   async signOut(req: Request, res: Response, next: NextFunction) {
     try {
+      const { refreshToken } = req.cookies;
+
+      const token = await userService.signOut(refreshToken);
+
+      res.clearCookie("refreshToken");
+      res.status(200).json(token);
     } catch (error) {
       next(error);
     }
