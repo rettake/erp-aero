@@ -34,7 +34,7 @@ router.post("/file/upload", upload.single("file"), authMiddleware, uploadFile);
 router.get("/file/list", authMiddleware, getList);
 router.delete("/file/delete/:id", authMiddleware, deleteFile);
 router.get("/file/:id", authMiddleware, getSingle);
-router.get("/file/download/:id", download);
+router.get("/file/download/:id", authMiddleware, download);
 router.put("/file/update/:id", upload.single("file"), authMiddleware, update);
 
 export default router;
