@@ -1,10 +1,25 @@
 import { NextFunction, Request, Response } from "express";
+import { ApiError } from "../exceptions/api-error";
+import fileService from "../service/file.service";
 
 class FileController {
   constructor() {}
 
-  async upload(req: Request, res: Response, next: NextFunction) {
+  async uploadFile(req: Request, res: Response, next: NextFunction) {
     try {
+      const file = req.file;
+
+      if (!file) {
+        return next(ApiError.BadRequest("No file uploaded"));
+      }
+
+      const uploadedFile = await fileService.upload(file);
+
+      if (!uploadedFile) {
+        return next(ApiError.BadRequest("File not uploaded"));
+      }
+
+      res.status(201).json(uploadedFile);
     } catch (error) {
       next(error);
     }

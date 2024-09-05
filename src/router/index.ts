@@ -1,3 +1,4 @@
+import multer from "multer";
 import { Router } from "express";
 import { body } from "express-validator";
 import userController from "../controllers/user.controller";
@@ -5,9 +6,10 @@ import authMiddleware from "../middlewares/auth.middleware";
 import fileController from "../controllers/file.controller";
 
 const router = Router();
+const upload = multer({ dest: "uploads/" });
 
 const { signUp, signIn, refresh, signOut, getInfo } = userController;
-const { upload, getList, deleteFile, getSingle, download, update } =
+const { uploadFile, getList, deleteFile, getSingle, download, update } =
   fileController;
 
 // Auth & User Routes
@@ -28,7 +30,7 @@ router.get("/logout", authMiddleware, signOut);
 router.get("/info", authMiddleware, getInfo);
 
 // File Routes
-router.post("/file/upload", authMiddleware, upload);
+router.post("/file/upload", upload.single("file"), authMiddleware, uploadFile);
 router.get("/file/list", authMiddleware, getList);
 router.delete("/file/delete/:id", authMiddleware, deleteFile);
 router.get("/file/:id", authMiddleware, getSingle);
