@@ -13,6 +13,9 @@ coverage
 dist
 uploads
 
+# prisma
+prisma/migrations
+
 # env
 *.env
 
