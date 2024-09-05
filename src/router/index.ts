@@ -2,10 +2,13 @@ import { Router } from "express";
 import { body } from "express-validator";
 import userController from "../controllers/user.controller";
 import authMiddleware from "../middlewares/auth.middleware";
+import fileController from "../controllers/file.controller";
 
 const router = Router();
 
 const { signUp, signIn, refresh, signOut, getInfo } = userController;
+const { upload, getList, deleteFile, getSingle, download, update } =
+  fileController;
 
 // Auth & User Routes
 router.post(
@@ -25,5 +28,11 @@ router.get("/logout", authMiddleware, signOut);
 router.get("/info", authMiddleware, getInfo);
 
 // File Routes
+router.post("/file/upload", authMiddleware, upload);
+router.get("/file/list", authMiddleware, getList);
+router.delete("/file/delete/:id", authMiddleware, deleteFile);
+router.get("/file/:id", authMiddleware, getSingle);
+router.get("/file/download/:id", authMiddleware, download);
+router.put("/file/update/:id", authMiddleware, update);
 
 export default router;

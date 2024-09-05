@@ -17,7 +17,7 @@ class FileController {
     }
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
+  async deleteFile(req: Request, res: Response, next: NextFunction) {
     try {
     } catch (error) {
       next(error);
