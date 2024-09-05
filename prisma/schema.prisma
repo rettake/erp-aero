@@ -19,3 +19,12 @@ model Token {
   userId       String @unique
   user         User   @relation(fields: [userId], references: [id])
 }
+
+model File {
+  id        String   @id @default(cuid())
+  name      String
+  extension String
+  mimeType  String
+  size      Int
+  uploaded  DateTime @default(now())
+}
