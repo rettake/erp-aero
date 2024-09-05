@@ -53,7 +53,7 @@ class FileController {
         return next(ApiError.BadRequest("File not found"));
       }
 
-      await fileService.delete(fileId);
+      await fileService.delete(fileId, file.path);
 
       res.status(200).json({ message: "File deleted successfully" });
     } catch (error) {

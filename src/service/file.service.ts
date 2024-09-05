@@ -13,6 +13,7 @@ class FileService {
     const uploadedFile = await prisma.file.create({
       data: {
         name: file.originalname,
+        path: file.path,
         extension: file.originalname.split(".")[1],
         mimeType: file.mimetype,
         size: file.size,
@@ -31,16 +32,15 @@ class FileService {
     return files;
   }
 
-  async delete(id: string) {
+  async delete(id: string, path: string) {
     await prisma.file.delete({
       where: {
         id,
       },
     });
 
-    const filePath = path.join(this.uploadDir, id);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    if (fs.existsSync(path)) {
+      fs.unlinkSync(path);
     }
   }
 
