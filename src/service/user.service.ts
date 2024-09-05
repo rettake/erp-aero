@@ -63,7 +63,41 @@ class UserService {
     return { ...tokens, user };
   }
 
-  async refresh() {}
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw ApiError.UnauthorizedError();
+    }
+
+    const userData = await tokenService.validateRefreshToken(refreshToken);
+
+    const tokenFromDb = await tokenService.findRefreshToken(refreshToken);
+
+    if (!userData || !tokenFromDb) {
+      throw ApiError.UnauthorizedError();
+    }
+
+    if (typeof userData === "string") {
+      throw ApiError.UnauthorizedError();
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userData.id,
+      },
+    });
+
+    if (!user) {
+      throw ApiError.UnauthorizedError();
+    }
+
+    const tokens = tokenService.generateTokens(user.id);
+
+    await tokenService.saveToken(user.id, tokens.refreshToken);
+
+    delete (user as { password?: string }).password;
+
+    return { ...tokens, user };
+  }
 
   async signOut(refreshToken: string) {
     const token = await tokenService.removeToken(refreshToken);
@@ -71,7 +105,21 @@ class UserService {
     return token;
   }
 
-  async getInfo() {}
+  async getInfo(refreshToken: string) {
+    const userData = await tokenService.validateRefreshToken(refreshToken);
+
+    if (!userData || typeof userData === "string") {
+      throw ApiError.UnauthorizedError();
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userData.id } });
+
+    if (!user) {
+      throw ApiError.UnauthorizedError();
+    }
+
+    return user.id;
+  }
 }
 
 const userService = new UserService();

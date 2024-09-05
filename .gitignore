@@ -9,6 +9,9 @@ npm-shrinkwrap.json
 .nyc_output
 coverage
 
+# dist
+dist
+
 # env
 *.env*
 

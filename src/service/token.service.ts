@@ -56,6 +56,34 @@ class TokenService {
 
     return tokenData.refreshToken;
   }
+
+  async validateAccessToken(token: string) {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET || "");
+      return userData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async validateRefreshToken(token: string) {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET || "");
+      return userData;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async findRefreshToken(refreshToken: string) {
+    const tokenData = await prisma.token.findUnique({
+      where: {
+        refreshToken,
+      },
+    });
+    
+    return tokenData;
+  }
 }
 
 const tokenService = new TokenService();

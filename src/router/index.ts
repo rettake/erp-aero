@@ -6,7 +6,12 @@ const router = Router();
 
 const { signUp, signIn, refresh, signOut, getInfo } = userController;
 
-router.post("/signin", signIn);
+router.post(
+  "/signin",
+  body("id").isString(),
+  body("password").isLength({ min: 6 }),
+  signIn
+);
 router.post("/signin/new_token", refresh);
 router.post(
   "/signup",
