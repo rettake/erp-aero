@@ -55,6 +55,22 @@ class FileController {
 
   async download(req: Request, res: Response, next: NextFunction) {
     try {
+      const fileId = req.params.id;
+      const file = await fileService.getSingle(fileId);
+
+      if (!file) {
+        return next(ApiError.BadRequest("File not found"));
+      }
+
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${file.name}"`
+      );
+      res.setHeader("Content-Type", file.mimeType);
+      res.setHeader("Content-Length", file.size);
+
+      // Возвращаем файл в ответе
+      res.status(200).send(file);
     } catch (error) {
       next(error);
     }

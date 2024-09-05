@@ -11,7 +11,7 @@ class FileService {
       data: {
         name: file.originalname,
         extension: file.originalname.split(".")[1],
-        mimeType: file.mimetype.split("/")[1],
+        mimeType: file.mimetype,
         size: file.size,
       },
     });
@@ -32,8 +32,6 @@ class FileService {
 
     return file;
   }
-
-  async download() {}
 
   async update() {}
 }
