@@ -41,6 +41,13 @@ class FileController {
 
   async getSingle(req: Request, res: Response, next: NextFunction) {
     try {
+      const file = await fileService.getSingle(req.params.id);
+
+      if (!file) {
+        return next(ApiError.BadRequest("File not found"));
+      }
+
+      res.status(200).json(file);
     } catch (error) {
       next(error);
     }

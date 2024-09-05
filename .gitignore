@@ -11,6 +11,7 @@ coverage
 
 # dist
 dist
+uploads
 
 # env
 *.env*

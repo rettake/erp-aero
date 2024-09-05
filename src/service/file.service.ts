@@ -23,7 +23,15 @@ class FileService {
 
   async delete() {}
 
-  async getSingle() {}
+  async getSingle(id: string) {
+    const file = await prisma.file.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return file;
+  }
 
   async download() {}
 
