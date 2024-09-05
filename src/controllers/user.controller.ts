@@ -37,6 +37,16 @@ class UserController {
 
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
+      const { id, password } = req.body;
+
+      const user = await userService.signIn(id, password);
+
+      res.cookie("refreshToken", user.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+
+      res.status(201).json(user);
     } catch (error) {
       next(error);
     }

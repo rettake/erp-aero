@@ -31,7 +31,24 @@ class UserService {
         delete user.password;
         return { ...tokens, user };
     }
-    async signIn() { }
+    async signIn(id, password) {
+        const user = await prisma.user.findUnique({
+            where: {
+                id,
+            },
+        });
+        if (!user) {
+            throw api_error_1.ApiError.BadRequest("User not found");
+        }
+        const isPasswordCorrect = await bcrypt_1.default.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            throw api_error_1.ApiError.BadRequest("Wrong password");
+        }
+        const tokens = token_service_1.default.generateTokens(user.id);
+        await token_service_1.default.saveToken(user.id, tokens.refreshToken);
+        delete user.password;
+        return { ...tokens, user };
+    }
     async refresh() { }
     async signOut() { }
     async getInfo() { }

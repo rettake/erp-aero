@@ -10,7 +10,7 @@ router.post("/signin", signIn);
 router.post("/signin/new_token", refresh);
 router.post(
   "/signup",
-  body("id").isEmail().isMobilePhone("ru-RU"),
+  body("id").isString(),
   body("password").isLength({ min: 6 }),
   signUp
 );

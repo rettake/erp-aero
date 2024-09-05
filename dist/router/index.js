@@ -10,7 +10,7 @@ const router = (0, express_1.Router)();
 const { signUp, signIn, refresh, signOut, getInfo } = user_controller_1.default;
 router.post("/signin", signIn);
 router.post("/signin/new_token", refresh);
-router.post("/signup", (0, express_validator_1.body)("id").isEmail().isMobilePhone("ru-RU"), (0, express_validator_1.body)("password").isLength({ min: 6 }), signUp);
+router.post("/signup", (0, express_validator_1.body)("id").isString(), (0, express_validator_1.body)("password").isLength({ min: 6 }), signUp);
 router.get("/logout", signOut);
 router.get("/info", getInfo);
 exports.default = router;

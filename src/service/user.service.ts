@@ -37,7 +37,31 @@ class UserService {
     return { ...tokens, user };
   }
 
-  async signIn() {}
+  async signIn(id: string, password: string) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw ApiError.BadRequest("User not found");
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      throw ApiError.BadRequest("Wrong password");
+    }
+
+    const tokens = tokenService.generateTokens(user.id);
+
+    await tokenService.saveToken(user.id, tokens.refreshToken);
+
+    delete (user as { password?: string }).password;
+
+    return { ...tokens, user };
+  }
 
   async refresh() {}
 
