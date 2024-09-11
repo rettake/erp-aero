@@ -8,14 +8,14 @@
 
 ## Введение
 
-Тестовое задание для ERP AERO
+Приложени с авторизацией на двух токенах, а также CRUD'ом для работы с файлами
 
 ## Установка
 
 Чтобы установить проект, выполните следующие шаги:
 
-1. git clone https://github.com/rettake/erp-aero.git
-2. cd erp-aero
+1. git clone https://github.com/rettake/express-starter.git
+2. cd express-starter
 3. npm i
 4. cp .env.example .env
 5. docker compose up -d
